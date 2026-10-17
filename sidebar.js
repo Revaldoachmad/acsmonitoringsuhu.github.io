@@ -16,6 +16,7 @@
     panel: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/>',
     grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
     bell: '<path d="M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/>',
+    out: '<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M16 8l4 4-4 4M20 12H9"/>',
     sliders: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>'
   };
   function ic(n) {
@@ -25,6 +26,10 @@
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+  function logoHtml() {
+    var c = window.DASBOR_CFG, l = c && c.logos && c.logos[0];
+    return l ? '<img class="sb-logo" src="' + esc(l.src) + '" alt="' + esc(l.alt || "") + '" onerror="this.remove()">' : "";
   }
   function $(s, r) { return (r || document).querySelector(s); }
   function txt(r, s) { var n = r.querySelector(s); return n ? n.textContent : ""; }
@@ -39,6 +44,10 @@
     ".sb button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}",
     ".sb-head{display:flex;align-items:center;justify-content:space-between;padding:14px 10px 6px 18px}",
     ".sb-title{font-size:1.25rem;font-weight:600}",
+    ".sb-brand{display:flex;align-items:center;gap:10px;min-width:0}",
+    ".sb-logo{height:30px;max-width:72px;padding:3px 5px;border-radius:7px;background:#fff;object-fit:contain;flex:none}",
+    ".sb-out{margin-left:auto;display:grid;place-items:center;width:34px;height:34px;border-radius:8px;color:var(--smu)}",
+    ".sb-out:hover{background:var(--shv);color:var(--stx)}",
     ".sb-tools{display:flex;gap:2px}",
     ".sb-ib{display:grid;place-items:center;width:38px;height:38px;border-radius:8px;color:var(--smu)}",
     ".sb-ib:hover{background:var(--shv);color:var(--stx)}",
@@ -95,7 +104,7 @@
     app.className = "app";
     app.innerHTML =
       '<aside class="sb" aria-label="Menu">' +
-        '<div class="sb-head"><span class="sb-title">' + esc(APP_TITLE) + "</span>" +
+        '<div class="sb-head"><span class="sb-brand">' + logoHtml() + '<span class="sb-title">' + esc(APP_TITLE) + "</span></span>" +
           '<div class="sb-tools">' +
             '<button class="sb-ib" type="button" data-act="search" aria-label="Cari ruangan">' + ic("search") + "</button>" +
             '<button class="sb-ib" type="button" data-act="toggle" aria-label="Tutup menu">' + ic("panel") + "</button>" +
@@ -109,7 +118,8 @@
           '<div id="sbRooms"></div>' +
         "</nav>" +
         '<div class="sb-foot"><span class="sb-av" aria-hidden="true">' + esc(initials) + '</span>' +
-          '<div class="sb-who"><b>' + esc(USER_NAME) + "</b><span>" + esc(USER_ROLE) + "</span></div></div>" +
+          '<div class="sb-who"><b>' + esc(USER_NAME) + "</b><span>" + esc(USER_ROLE) + "</span></div>" +
+          '<button class="sb-out" type="button" data-act="logout" aria-label="Keluar" title="Keluar">' + ic("out") + "</button></div>" +
       "</aside>" +
       '<div class="main"><div class="topbar">' +
         '<button class="sb-ib" type="button" data-act="toggle" aria-label="Buka menu">' + ic("panel") + "</button>" +
@@ -140,6 +150,7 @@
       var b = e.target.closest("[data-act]");
       if (!b) return;
       var a = b.getAttribute("data-act");
+      if (a === "logout") { if (window.dasborLogout) window.dasborLogout(); return; }
       if (a === "toggle") { setOpen(document.body.classList.contains("sb-closed")); return; }
       if (a === "search") {
         var box = $(".sb-search", app);
