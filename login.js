@@ -6,9 +6,9 @@
   "use strict";
 
   /* ===== Ubah di sini ===== */
-  var APP_TITLE = "Cold Room";
-  var SUBTITLE  = "Monitoring suhu ruang pendingin";
-  var FOOTER    = "OJT 2026";                 // teks kecil di bawah form
+  var APP_TITLE = "Aerofood ACS Surabaya";
+  var SUBTITLE  = "Monitoring Suhu Ruangan";
+  var FOOTER    = "2026©";                 // teks kecil di bawah form
   var LOGOS = [                               // taruh file gambar di folder logo/
     { src: "logo/logo-1.png", alt: "Logo 1" },
     { src: "logo/logo-2.png", alt: "Logo 2" },
